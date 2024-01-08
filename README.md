@@ -551,8 +551,8 @@ behavior of the program is said to be referentially transparent.
 
 Given the function greet:
 
-```js
-const greet = () => 'Hello World!'
+```kotlin
+val greet = { "Hello World!" }
 ```
 
 Any invocation of `greet()` can be replaced with `Hello World!` hence greet is
@@ -566,9 +566,9 @@ When an application is composed of expressions and devoid of side effects,
 truths about the system can be derived from the parts. You can also be confident
 about details of your system without having to go through every function.
 
-```js
-const grainToDogs = compose(chickenIntoDogs, grainIntoChicken)
-const grainToCats = compose(dogsIntoCats, grainToDogs)
+```kotlin
+val grainToDogs = compose(chickenIntoDogs, grainIntoChicken)
+val grainToCats = compose(dogsIntoCats, grainToDogs)
 ```
 
 In the example above, if you know that `chickenIntoDogs` and `grainIntoChicken`
@@ -579,24 +579,20 @@ when more is known about the functions (associative, commutative, idempotent, et
 
 An anonymous function that can be treated like a value.
 
-```js
-;(function (a) {
-  return a + 1
-})
-
-;(a) => a + 1
+```kotlin
+{ a: Int -> a + 1 }
 ```
 
 Lambdas are often passed as arguments to Higher-Order functions:
 
-```js
-;[1, 2].map((a) => a + 1) // [2, 3]
+```kotlin
+listOf(1, 2).map { a -> a + 1 } // [2, 3]
 ```
 
 You can assign a lambda to a variable:
 
-```js
-const add1 = (a) => a + 1
+```kotlin
+val add1 = { a: Int -> a + 1 }
 ```
 
 ## Lambda Calculus
@@ -607,15 +603,15 @@ A branch of mathematics that uses functions to create a [universal model of comp
 
 A higher-order function, usually curried, which returns a new function changed in some way. Functional combinators are often used in [Point-Free Style](#point-free-style) to write especially terse programs.
 
-```js
-// The "C" combinator takes a curried two-argument function and returns one which calls the original function with the arguments reversed.
-const C = (f) => (a) => (b) => f(b)(a)
+```kotlin
+// The "c" combinator takes a curried two-argument function and returns one which calls the original function with the arguments reversed.
+val c = { f: (Int) -> (Int) -> Int -> { a: Int -> { b: Int -> f(b)(a) } } }
 
-const divide = (a) => (b) => a / b
+val divide = { a: Int -> { b: Int -> a / b } }
 
-const divideBy = C(divide)
+val divideBy = c(divide)
 
-const divBy10 = divideBy(10)
+val divBy10 = divideBy(10)
 
 divBy10(30) // => 3
 ```
@@ -626,17 +622,15 @@ See also [List of Functional Combinators in JavaScript](https://gist.github.com/
 
 Lazy evaluation is a call-by-need evaluation mechanism that delays the evaluation of an expression until its value is needed. In functional languages, this allows for structures like infinite lists, which would not normally be available in an imperative language where the sequencing of commands is significant.
 
-```js
-const rand = function * () {
-  while (1 < 2) {
-    yield Math.random()
-  }
+```kotlin
+val rand: Double by lazy {
+    println("generate random value...")
+    Math.random()
 }
 ```
 
-```js
-const randIter = rand()
-randIter.next() // Each execution gives a random value, expression is evaluated on need.
+```kotlin
+rand // Each execution gives a random value, expression is evaluated on need.
 ```
 
 ## Monoid
@@ -645,7 +639,7 @@ An object with a function that "combines" that object with another of the same t
 
 One simple monoid is the addition of numbers:
 
-```js
+```kotlin
 1 + 1 // 2
 ```
 
@@ -655,34 +649,34 @@ When any value is combined with the "identity" value the result must be the orig
 
 The identity value for addition is `0`.
 
-```js
+```kotlin
 1 + 0 // 1
 0 + 1 // 1
-1 + 0 === 0 + 1
+1 + 0 == 0 + 1
 ```
 
 It's also required that the grouping of operations will not affect the result (associativity):
 
-```js
-1 + (2 + 3) === (1 + 2) + 3 // true
+```kotlin
+1 + (2 + 3) == (1 + 2) + 3 // true
 ```
 
 Array concatenation also forms a monoid:
 
-```js
-;[1, 2].concat([3, 4]) // [1, 2, 3, 4]
+```kotlin
+listOf(1, 2) + listOf(3, 4) // [1, 2, 3, 4]
 ```
 
 The identity value is empty array `[]`:
 
 ```js
-;[1, 2].concat([]) // [1, 2]
+listOf(1, 2) + emptyList() // [1, 2]
 ```
 
 As a counterexample, subtraction does not form a monoid because there is no commutative identity value:
 
-```js
-0 - 4 === 4 - 0 // false
+```kotlin
+0 - 4 == 4 - 0 // false
 ```
 
 ## Monad
